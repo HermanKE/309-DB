@@ -1,12 +1,13 @@
 # Database oppgave
 Oppgave for IS-309 UiA
 
-Description of the contribution of each group member to the completion of the
-assignment:
+**Description of the contribution of each group member to the completion of the assignment:** <br />
+
+We have each made our own procedure as per the requirments of the assingment, please see the list below for which group member was responsible for each procedure <br />
 
 
-Herman: 
-Eric: ADD_DOCK_SP
-Trym:
-GA:
-Sofia:
+**Herman:** <br />
+**Eric:** ADD_DOCK_SP <br />
+**Trym:** <br />
+**GA:** <br />
+**Sofia:** <br />
