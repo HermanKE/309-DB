@@ -17,6 +17,7 @@ CREATE OR REPLACE PROCEDURE ADD_DOCK_SP(
 LANGUAGE plpgsql
 AS $$
 BEGIN
+	BEGIN;
     -- Check for mandatory values
     IF p_station_id IS NULL THEN
         RAISE EXCEPTION 'Missing mandatory value for parameter station_id in ADD_DOCK_SP. No dock added.';
@@ -61,9 +62,13 @@ BEGIN
     INSERT INTO BC_DOCK(station_id, dock_id, dock_status, bicycle_id)
     VALUES (p_station_id, p_dock_id, p_dock_status, p_bicycle_id);
 
+    -- If all operations were successful, commit the transaction
+    COMMIT;
+
     -- Catch and re-throw any exceptions. This makes sure errors are not hidden and can be dealt with outside this code.
     EXCEPTION
         WHEN OTHERS THEN
+	    ROLLBACK;
             RAISE;
 END;
 $$;
