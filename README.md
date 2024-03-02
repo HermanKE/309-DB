@@ -9,5 +9,5 @@ We have each made our own procedure as per the requirments of the assignment, pl
 **Herman:** <br />
 **Eric:** ADD_DOCK_SP <br />
 **Trym:** PURCHASE_MEMBERSHIP_SP <br />
-**GA:** <br />
+**GA:** CREATE_BICYCLE_SP <br />
 **Sofia:** <br />
