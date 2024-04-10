@@ -7,8 +7,7 @@ Det kun Herman og Sofia igjen i gruppe 8.
 
 
 ***
-# Assignment2:
-
+** Assignment2:
 **Description of the contribution of each group member to the completion of the assignment:** <br />
 
 We have each made our own procedure as per the requirments of the assignment, please see the list below for which group member was responsible for each procedure <br />
