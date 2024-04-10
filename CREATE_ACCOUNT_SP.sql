@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS BC_ACCOUNT (
 -- Procedure to create a new account
 
 CREATE OR REPLACE PROCEDURE CREATE_ACCOUNT_SP (
+	OUT p_account_id INTEGER,
 	p_account_first_name VARCHAR,
 	p_account_last_name VARCHAR,
 	p_account_email VARCHAR, 
@@ -53,7 +54,7 @@ IF p_account_email IS NULL THEN
 END IF;
 
 -- Check for duplicate email
-IF EXISTS (SELECT 1 FROM BC_ACCOUNT WHERE email = p_account_email) THEN
+IF EXISTS (SELECT 1 FROM BC_ACCOUNT WHERE account_email = p_account_email) THEN
 		RAISE EXCEPTION 'Duplicate email address. Account email addresses must be unique.';
 		RETURN;
 END IF;
@@ -114,7 +115,8 @@ VALUES (
     p_account_city,
     p_account_state_province,
     p_account_postal_code
-);
+)
+RETURNING account_id INTO p_account_id;
 
  -- Commiting the transaction if all operations were sucessful
     COMMIT;
