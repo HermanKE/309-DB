@@ -51,15 +51,15 @@ IF	p_station_name IS NULL THEN
 END IF;
 
  -- Check for invalid latitude
-IF	p_latitude IS NULL THEN
-		RAISE EXCEPTION 'Missing mandatory value for parameter p_latitude in CREATE_STATION_SP. No account added.';
-		RETURN;
+IF p_latitude IS NULL OR p_latitude < -90 OR p_latitude > 90 THEN
+	RAISE EXCEPTION 'Invalid Latitude (%).', p_latitude;
+	RETURN;
 END IF;
 
  -- Check for invalid longitude
-IF	p_longitude IS NULL THEN
-		RAISE EXCEPTION 'Missing mandatory value for parameter p_longitude in CREATE_STATION_SP. No account added.';
-		RETURN;
+IF p_longitude IS NULL OR p_longitude < -180 OR p_longitude > 180 THEN
+	RAISE EXCEPTION 'Invalid Longitude (%).', p_longitude;
+	RETURN;
 END IF;
 
  -- Check for invalid capacity
@@ -80,6 +80,12 @@ IF	p_docks_available IS NULL THEN
 		RETURN;
 END IF;
 
+-- Check if the sum of vehicles_available and docks_available exceeds capacity
+IF p_vehicles_available + p_docks_available > p_capacity THEN
+	RAISE EXCEPTION 'Capacity exceeded. The sum of the number of vehicles (%) and available docks (%) exceeds the capacity (%) of the station.', p_vehicles_available, p_docks_available, p_capacity;
+	RETURN;
+END IF;
+
  -- Check for invalid is_renting
 IF	p_is_renting IS NULL THEN
 		RAISE EXCEPTION 'Missing mandatory value for parameter p_is_renting in CREATE_STATION_SP. No account added.';
@@ -98,18 +104,19 @@ IF	p_last_report IS NULL THEN
 		RETURN;
 END IF;
 
- -- Check for invalid program_id
-IF	p_program_id IS NULL THEN
-		RAISE EXCEPTION 'Missing mandatory value for parameter p_program_id in CREATE_STATION_SP. No account added.';
-		RETURN;
+ -- Check if program_id exists in BC_PROGRAM table
+IF NOT EXISTS (SELECT 1 FROM BC_PROGRAM WHERE program_id = p_program_id) THEN
+    RAISE EXCEPTION 'Invalid Program (%).', p_program_id;
+    RETURN;
 END IF;
+
 
  -- If all checks are passed, insert the station into the table
 INSERT INTO BC_STATION (
     station_name,
     station_short_name,
-    latitude,
-    longitude,
+    station_latitude,
+    station_longitude,
     address,
     postal_code,
     contact_phone,
@@ -148,6 +155,5 @@ EXCEPTION
 
 END;
 $$ LANGUAGE plpgsql;
-
 
 
