@@ -1,16 +1,34 @@
+-- PURCHASE_MEMBERSHIP_SP
+
+DROP PROCEDURE IF EXISTS PURCHASE_MEMBERSHIP_SP;
+
+-- Creating the BC_MEMBERSHIP table
+
+CREATE TABLE IF NOT EXISTS BC_MEMBERSHIP (
+	membership_id SERIAL PRIMARY KEY,
+	pass_type VARCHAR NOT NULL,
+    pass_total NUMERIC NOT NULL,
+    start_time DATE NOT NULL,
+    end_time DATE NOT NULL,
+    account_id INTEGER NOT NULL
+);
+
+-- Adding PURCHASE_MEMBERSHIP_SP, to the BC_MEMBERSHIP table
+
 CREATE OR REPLACE PROCEDURE PURCHASE_MEMBERSHIP_SP(
-    p_membership_id INTEGER,
+    OUT p_membership_id INTEGER,
     p_pass_type VARCHAR,
     p_pass_total NUMERIC,
     p_start_time DATE,
     p_end_time DATE,
     p_account_id INTEGER
 )
-LANGUAGE plpgsql
+
 AS $$
 DECLARE
     -- Declare a variable for when exceptions arise to enable rollback
     should_rollback BOOLEAN DEFAULT FALSE;
+	pass_id INTEGER;
 BEGIN
     -- Checking for mandatory variables
     IF p_pass_type IS NULL THEN
@@ -26,7 +44,8 @@ BEGIN
     END IF;
 
     -- Validating the pass type 
-    IF NOT EXISTS (SELECT 1 FROM BC_PASS WHERE pass_type = p_pass_type) THEN
+    SELECT pass_id INTO pass_id FROM BC_PASS WHERE pass_type = p_pass_type;
+    IF NOT FOUND THEN
         RAISE EXCEPTION 'Invalid membership pass type (%).', p_pass_type;
     END IF;
 
@@ -57,4 +76,7 @@ BEGIN
         COMMIT;
     END IF;
 END;
-$$;
+$$ LANGUAGE plpgsql;
+
+
+
