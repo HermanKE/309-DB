@@ -115,8 +115,8 @@ END IF;
 INSERT INTO BC_STATION (
     station_name,
     station_short_name,
-    station_latitude,
-    station_longitude,
+    latitude,
+    longitude,
     address,
     postal_code,
     contact_phone,
