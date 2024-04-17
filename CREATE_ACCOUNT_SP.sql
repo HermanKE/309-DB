@@ -5,16 +5,16 @@ DROP PROCEDURE IF EXISTS CREATE_ACCOUNT_SP;
 
 CREATE TABLE IF NOT EXISTS BC_ACCOUNT (
 	account_id SERIAL PRIMARY KEY, 
-	first_name VARCHAR NOT NULL,
-	last_name VARCHAR NOT NULL,
-	email VARCHAR UNIQUE NOT NULL, 
-	password VARCHAR NOT NULL, 
-	mobile_phone VARCHAR NOT NULL,
-	street VARCHAR NOT NULL,
-	apartment VARCHAR,
-	city VARCHAR NOT NULL,
-	state_province VARCHAR NOT NULL, 
-	postal_code VARCHAR NOT NULL
+	account_first_name VARCHAR NOT NULL,
+	account_last_name VARCHAR NOT NULL,
+	account_email VARCHAR UNIQUE NOT NULL, 
+	account_password VARCHAR NOT NULL, 
+	account_mobile_phone VARCHAR NOT NULL,
+	account_street VARCHAR NOT NULL,
+	account_apartment VARCHAR,
+	account_city VARCHAR NOT NULL,
+	account_state_province VARCHAR NOT NULL, 
+	account_postal_code VARCHAR NOT NULL
 );
 
 -- Procedure to create a new account
@@ -92,16 +92,16 @@ END IF;
 
 -- Insert new account into BC_ACCOUNT
 INSERT INTO BC_ACCOUNT (
-    first_name,
-    last_name,
-    email,
-    password,
-    mobile_phone,
-    street,
-    apartment,
-    city,
-    state_province,
-    postal_code
+    account_first_name,
+    account_last_name,
+    account_email,
+    account_password,
+    account_mobile_phone,
+    account_street,
+    account_apartment,
+    account_city,
+    account_state_province,
+    account_postal_code
 )
 
 VALUES (
