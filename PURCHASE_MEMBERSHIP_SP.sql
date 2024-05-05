@@ -28,7 +28,7 @@ AS $$
 DECLARE
     -- Declare a variable for when exceptions arise to enable rollback
     should_rollback BOOLEAN DEFAULT FALSE;
-	pass_id INTEGER;
+	unique_pass_id INTEGER;
 BEGIN
     -- Checking for mandatory variables
     IF p_pass_type IS NULL THEN
@@ -44,7 +44,7 @@ BEGIN
     END IF;
 
     -- Validating the pass type 
-    SELECT pass_id INTO pass_id FROM BC_PASS WHERE pass_type = p_pass_type;
+    SELECT membership_id INTO unique_pass_id FROM BC_PASS WHERE pass_type = p_pass_type;
     IF NOT FOUND THEN
         RAISE EXCEPTION 'Invalid membership pass type (%).', p_pass_type;
     END IF;
