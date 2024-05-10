@@ -1,0 +1,364 @@
+CREATE SCHEMA IF NOT EXISTS assignment;
+
+
+
+
+-- Drop obsolete or redundant procedures
+DROP PROCEDURE IF EXISTS assignment.create_account_sp;
+DROP PROCEDURE IF EXISTS assignment.create_bicycle_sp;
+DROP PROCEDURE IF EXISTS assignment.create_dock_sp;
+DROP PROCEDURE IF EXISTS assignment.create_station_sp;
+DROP PROCEDURE IF EXISTS assignment.purchase_membership_sp;
+
+-- Create the table before creating the procedure
+CREATE TABLE IF NOT EXISTS assignment.bc_dock (
+  station_id VARCHAR NOT NULL,
+  dock_id INTEGER NOT NULL,
+  dock_status VARCHAR NOT NULL,
+  bicycle_id INTEGER DEFAULT NULL
+);
+
+-- Create the bc_account table
+CREATE TABLE IF NOT EXISTS assignment.bc_account (
+  account_id SERIAL PRIMARY KEY,
+  account_first_name VARCHAR NOT NULL,
+  account_last_name VARCHAR NOT NULL,
+  account_email VARCHAR UNIQUE NOT NULL,
+  account_password VARCHAR NOT NULL,
+  account_mobile_phone VARCHAR NOT NULL,
+  account_street VARCHAR,
+  account_apartment VARCHAR,
+  account_city VARCHAR NOT NULL,
+  account_state_province VARCHAR NOT NULL,
+  account_postal_code VARCHAR NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_bicycle (
+    bicycle_id SERIAL PRIMARY KEY,
+    bicycle_type VARCHAR NOT NULL,
+    capacity INTEGER,
+    make VARCHAR,
+    model VARCHAR,
+    color VARCHAR,
+    year_acquired INTEGER,
+    status VARCHAR NOT NULL,
+    latitude INTEGER,
+    longitude INTEGER,
+    current_power NUMERIC,
+    current_range NUMERIC,
+    updated DATE
+);
+
+
+CREATE TABLE IF NOT EXISTS assignment.bc_station (
+	station_id SERIAL PRIMARY KEY, 
+    station_name VARCHAR NOT NULL,
+    station_short_name VARCHAR,
+    latitude NUMERIC NOT NULL,
+    longitude NUMERIC NOT NULL,
+    address VARCHAR,
+    postal_code VARCHAR,
+    contact_phone VARCHAR,
+    capacity INTEGER NOT NULL,
+    vehicles_available INTEGER NOT NULL,
+    docks_available INTEGER NOT NULL,
+    is_renting NUMERIC NOT NULL,
+    is_returning NUMERIC NOT NULL,
+    last_report DATE NOT NULL,
+    program_id VARCHAR NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS assignment.bc_membership (
+  	membership_id SERIAL PRIMARY KEY,
+	pass_type VARCHAR NOT NULL,
+    pass_total NUMERIC NOT NULL,
+    start_time DATE NOT NULL,
+    end_time DATE NOT NULL,
+    account_id INTEGER NOT NULL,
+	FOREIGN KEY (account_id) REFERENCES assignment.bc_account(account_id)  -- Foreign key relationship
+
+);
+
+-- Create the stored procedure within the correct schema
+CREATE OR REPLACE PROCEDURE assignment.create_dock_sp (
+    p_station_id VARCHAR,
+    p_dock_id INTEGER,
+    p_dock_status VARCHAR,
+    p_bicycle_id INTEGER DEFAULT NULL
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_dock(
+        station_id, 
+        dock_id, 
+        dock_status, 
+        bicycle_id
+    ) 
+    VALUES (
+        p_station_id, 
+        p_dock_id, 
+        p_dock_status, 
+        p_bicycle_id
+    );
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+
+-- Create CREATE_ACCOUNT_SP in the 'assignment' schema
+CREATE OR REPLACE PROCEDURE assignment.create_account_sp (
+    p_account_first_name VARCHAR,
+    p_account_last_name VARCHAR,
+    p_account_email VARCHAR,
+    p_account_password VARCHAR,
+    p_account_mobile_phone VARCHAR,
+    p_account_street VARCHAR,
+    p_account_apartment VARCHAR,
+    p_account_city VARCHAR,
+    p_account_state_province VARCHAR,
+    p_account_postal_code VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_account (
+        account_first_name, 
+        account_last_name,
+        account_email,
+        account_password,
+        account_mobile_phone,
+        account_street,
+        account_apartment,
+        account_city,
+        account_state_province,
+        account_postal_code
+    )
+    VALUES (
+        p_account_first_name,
+        p_account_last_name,
+        p_account_email,
+        p_account_password,
+        p_account_mobile_phone,
+        p_account_street,
+        p_account_apartment,
+        p_account_city,
+        p_account_state_province,
+        p_account_postal_code
+    );
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE assignment.create_station_sp (
+   	p_station_name VARCHAR, 
+    p_station_short_name VARCHAR,
+    p_latitude NUMERIC, 
+    p_longitude NUMERIC,
+    p_address VARCHAR,
+    p_postal_code VARCHAR,
+    p_contact_phone VARCHAR,
+    p_capacity INTEGER, 
+    p_vehicles_available INTEGER, 
+    p_docks_available INTEGER, 
+    p_is_renting NUMERIC, 
+    p_is_returning NUMERIC,
+    p_last_report DATE, 
+    p_program_id VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_station (
+    station_name,
+    station_short_name,
+    latitude,
+    longitude,
+    address,
+    postal_code,
+    contact_phone,
+    capacity,
+    vehicles_available,
+    docks_available,
+    is_renting,
+    is_returning,
+    last_report,
+    program_id
+    )
+    VALUES (
+		p_station_name, 
+		p_station_short_name,
+		p_latitude, 
+		p_longitude,
+		p_address,
+		p_postal_code,
+		p_contact_phone,
+		p_capacity, 
+		p_vehicles_available, 
+		p_docks_available, 
+		p_is_renting, 
+		p_is_returning,
+		p_last_report, 
+		p_program_id
+    );
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE assignment.create_bicycle_sp (
+   p_bicycle_type VARCHAR,  -- Define type for the parameter
+   p_capacity INTEGER,
+   p_make VARCHAR,
+   p_model VARCHAR,
+   p_color VARCHAR,
+   p_year_acquired INTEGER,
+   p_status VARCHAR,
+   p_latitude NUMERIC,
+   p_longitude NUMERIC,
+   p_current_power NUMERIC,
+   p_current_range NUMERIC,
+   p_updated DATE
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_bicycle (
+   		bicycle_type,
+		capacity,
+		make,
+		model,
+		color,
+		year_acquired,
+		status,
+		latitude,
+		longitude,
+		current_power,
+		current_range,
+		updated 
+    )
+    VALUES (
+		p_bicycle_type,
+		p_capacity,
+		p_make,
+		p_model,
+		p_color,
+		p_year_acquired,
+		p_status,
+		p_latitude,
+		p_longitude,
+		p_current_power,
+		p_current_range,
+		p_updated 
+    );
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+
+CREATE OR REPLACE PROCEDURE assignment.purchase_membership_sp (
+    p_pass_type VARCHAR,
+    p_pass_total NUMERIC,
+    p_start_time DATE,
+    p_end_time DATE,
+    p_account_id INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_membership (
+        pass_type,
+        pass_total,
+        start_time,
+        end_time,
+        account_id
+    ) 
+    VALUES (
+        p_pass_type,
+        p_pass_total, 
+        p_start_time, 
+        p_end_time, 
+        p_account_id
+    );
+
+
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE;
+END;
+$$;
+
+-- Call the procedure to create an account
+CALL assignment.create_account_sp(
+    'Sofia',  -- p_account_first_name
+    'Gronn',  -- p_account_last_name
+    'sofia.gronn@example.com',  -- p_account_email
+    'password321',  -- p_account_password
+    '444-44-444',  -- p_account_mobile_phone
+    'Schonvei',  -- p_account_street
+    '44',  -- p_account_apartment
+    'Oslo',  -- p_account_city
+    'Eksempel',  -- p_account_state_province
+    '6628'  -- p_account_postal_code
+);
+
+-- Call the procedure to create a station
+CALL assignment.create_station_sp(
+    'Furuset Station',  -- p_station_name
+    'FURU',  -- p_station_short_name
+    32.7128,  -- p_latitude
+    -48.0060,  -- p_longitude
+    'Furuveien 2',  -- p_address
+    '2299',  -- p_postal_code
+    '123-456-7890',  -- p_contact_phone
+    20,  -- p_capacity
+    10,  -- p_vehicles_available
+    10,  -- p_docks_available
+    1,  -- p_is_renting
+    1,  -- p_is_returning
+    CURRENT_DATE,  -- p_last_report
+    'PROG002'  -- p_program_id
+);
+
+-- Call the procedure to create a bicycle
+CALL assignment.create_bicycle_sp(
+    'Classic',  -- p_bicycle_type
+    5,  -- p_capacity
+    'MTM',  -- p_make
+    'Bicycle 1.0',  -- p_model
+    'Black',  -- p_color
+    2023,  -- p_year_acquired
+    'Available',  -- p_status
+    40,  -- p_latitude
+    -54,  -- p_longitude
+    75,  -- p_current_power
+    100,  -- p_current_range
+    CURRENT_DATE  -- p_updated
+);
+
+-- Call the procedure to create a dock
+CALL assignment.create_dock_sp(
+    '2',  -- p_station_id
+    2,  -- p_dock_id
+    'Open',  -- p_dock_status
+    NULL  -- p_bicycle_id
+);
+
+-- Call the procedure to create a membership
+CALL assignment.purchase_membership_sp(
+    'Monthly',  -- p_pass_type
+    50,  -- p_pass_total
+    CURRENT_DATE,  -- p_start_time
+    CURRENT_DATE + INTERVAL '1 month',  -- p_end_time
+    2  -- p_account_id
+);
