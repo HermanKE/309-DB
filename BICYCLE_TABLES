@@ -1,6 +1,5 @@
-CREATE SCHEMA IF NOT EXISTS assignment;
+-- Creating the necessary tables before creating the procedures
 
--- Create the table before creating the procedure
 CREATE TABLE IF NOT EXISTS assignment.bc_dock (
   station_id VARCHAR NOT NULL,
   dock_id SERIAL PRIMARY KEY,
@@ -8,7 +7,6 @@ CREATE TABLE IF NOT EXISTS assignment.bc_dock (
   bicycle_id INTEGER DEFAULT NULL
 );
 
--- Create the bc_account table
 CREATE TABLE IF NOT EXISTS assignment.bc_account (
   account_id SERIAL PRIMARY KEY,
   account_first_name VARCHAR NOT NULL,
@@ -66,7 +64,9 @@ CREATE TABLE IF NOT EXISTS assignment.bc_membership (
     start_time DATE NOT NULL,
     end_time DATE NOT NULL,
     account_id INTEGER NOT NULL,
-	FOREIGN KEY (account_id) REFERENCES assignment.bc_account(account_id)  -- Foreign key relationship
+
+-- Ensuring that every value in the column 'account_id' in 'bc_membership' table must also exist in the column 'account_id' in 'bc_account'table 
+FOREIGN KEY (account_id) REFERENCES assignment.bc_account(account_id)  -- Foreign key relationship
 
 );
 
@@ -94,7 +94,8 @@ CREATE TABLE IF NOT EXISTS assignment.bc_pass(
 	pass_description VARCHAR (255),
 	program_id VARCHAR (25),
 	pass_id SERIAL PRIMARY KEY,
-	
+
+-- Making sure that the values in column 'pass_id' in the 'bc_pass' table also corresponds with 'account_id'
 	FOREIGN KEY (pass_id) REFERENCES assignment.bc_pass (account_id)  -- Foreign key relationship
 );
 
