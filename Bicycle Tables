@@ -1,0 +1,122 @@
+CREATE SCHEMA IF NOT EXISTS assignment;
+
+-- Create the table before creating the procedure
+CREATE TABLE IF NOT EXISTS assignment.bc_dock (
+  station_id VARCHAR NOT NULL,
+  dock_id SERIAL PRIMARY KEY,
+  dock_status VARCHAR NOT NULL,
+  bicycle_id INTEGER DEFAULT NULL
+);
+
+-- Create the bc_account table
+CREATE TABLE IF NOT EXISTS assignment.bc_account (
+  account_id SERIAL PRIMARY KEY,
+  account_first_name VARCHAR NOT NULL,
+  account_last_name VARCHAR NOT NULL,
+  account_email VARCHAR UNIQUE NOT NULL,
+  account_password VARCHAR NOT NULL,
+  account_mobile_phone VARCHAR NOT NULL,
+  account_street VARCHAR,
+  account_apartment VARCHAR,
+  account_city VARCHAR NOT NULL,
+  account_state_province VARCHAR NOT NULL,
+  account_postal_code VARCHAR NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_bicycle (
+    bicycle_id SERIAL PRIMARY KEY,
+    bicycle_type VARCHAR NOT NULL,
+    capacity INTEGER,
+    make VARCHAR,
+    model VARCHAR,
+    color VARCHAR,
+    year_acquired INTEGER,
+    status VARCHAR NOT NULL,
+    latitude INTEGER,
+    longitude INTEGER,
+    current_power NUMERIC,
+    current_range NUMERIC,
+    updated DATE
+);
+
+
+CREATE TABLE IF NOT EXISTS assignment.bc_station (
+	station_id SERIAL PRIMARY KEY, 
+    station_name VARCHAR NOT NULL,
+    station_short_name VARCHAR,
+    latitude NUMERIC NOT NULL,
+    longitude NUMERIC NOT NULL,
+    address VARCHAR,
+    postal_code VARCHAR,
+    contact_phone VARCHAR,
+    capacity INTEGER NOT NULL,
+    vehicles_available INTEGER NOT NULL,
+    docks_available INTEGER NOT NULL,
+    is_renting NUMERIC NOT NULL,
+    is_returning NUMERIC NOT NULL,
+    last_report DATE NOT NULL,
+    program_id VARCHAR NOT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS assignment.bc_membership (
+  	membership_id SERIAL PRIMARY KEY,
+	pass_type VARCHAR NOT NULL,
+    pass_total NUMERIC NOT NULL,
+    start_time DATE NOT NULL,
+    end_time DATE NOT NULL,
+    account_id INTEGER NOT NULL,
+	FOREIGN KEY (account_id) REFERENCES assignment.bc_account(account_id)  -- Foreign key relationship
+
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_country (
+	country_code CHAR (2) NOT NULL,
+	country_formal_name VARCHAR (50) NOT NULL,
+	country_short_name VARCHAR (25)
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_program (
+	program_id SERIAL PRIMARY KEY,
+	program_location VARCHAR (25),
+	program_name VARCHAR (50) NOT NULL,
+	program_short_name VARCHAR(25),
+	program_url VARCHAR (15),
+	program_phone_number VARCHAR (15),
+	program_email VARCHAR (15),
+	program_timezone VARCHAR (20),
+	country_code CHAR (2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_pass(
+	pass_type VARCHAR (50),
+	pass_cost NUMERIC,
+	pass_description VARCHAR (255),
+	program_id VARCHAR (25),
+	pass_id SERIAL PRIMARY KEY,
+	
+	FOREIGN KEY (pass_id) REFERENCES assignment.bc_pass (account_id)  -- Foreign key relationship
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_bicycle_status(
+	bicycle_id INTEGER,
+	bicycle_status_timestamp DATE,
+	bicycle_status_latitude NUMERIC (8, 6),
+	bicycle_status_longitude NUMERIC (9, 6),
+	bicycle_status_power INTEGER,
+	bicycle_status_range NUMERIC (7, 1),
+	bicycle_status VARCHAR (15)
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_trip (
+	trip_id SERIAL PRIMARY KEY,
+	bicycle_id INTEGER,
+	trip_start_time DATE,
+	trip_end_time DATE,
+	trip_duration INTEGER,
+	trip_distance NUMERIC (7,1),
+	trip_cost NUMERIC,
+	start_station_id VARCHAR (25),
+	end_station_id VARCHAR (25),
+	memebership_id INTEGER
+);
