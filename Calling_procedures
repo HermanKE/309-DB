@@ -1,3 +1,11 @@
+-- Drop obsolete or redundant procedures
+DROP PROCEDURE IF EXISTS assignment.create_account_sp;
+DROP PROCEDURE IF EXISTS assignment.create_bicycle_sp;
+DROP PROCEDURE IF EXISTS assignment.create_dock_sp;
+DROP PROCEDURE IF EXISTS assignment.create_station_sp;
+DROP PROCEDURE IF EXISTS assignment.purchase_membership_sp;
+
+
 -- Call the procedure to create an account
 CALL assignment.create_account_sp(
     'August',  -- p_account_first_name
