@@ -10,6 +10,7 @@ DROP PROCEDURE IF EXISTS assignment.create_pass_sp;
 DROP PROCEDURE IF EXISTS assignment.create_status_sp;
 DROP PROCEDURE IF EXISTS assignment.create_trip_sp;
 
+
 -- Create the stored procedure within the correct schema
 CREATE OR REPLACE PROCEDURE assignment.create_dock_sp (
     p_station_id VARCHAR,
