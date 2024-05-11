@@ -9,6 +9,11 @@ DROP PROCEDURE IF EXISTS assignment.create_bicycle_sp;
 DROP PROCEDURE IF EXISTS assignment.create_dock_sp;
 DROP PROCEDURE IF EXISTS assignment.create_station_sp;
 DROP PROCEDURE IF EXISTS assignment.purchase_membership_sp;
+DROP PROCEDURE IF EXISTS assignment.create_country_sp;
+DROP PROCEDURE IF EXISTS assignment.create_program_sp;
+DROP PROCEDURE IF EXISTS assignment.create_pass_sp;
+DROP PROCEDURE IF EXISTS assignment.create_status_sp;
+DROP PROCEDURE IF EXISTS assignment.create_trip_sp;
 
 
 
@@ -81,6 +86,58 @@ CREATE TABLE IF NOT EXISTS assignment.bc_membership (
 	FOREIGN KEY (account_id) REFERENCES assignment.bc_account(account_id)  -- Foreign key relationship
 
 );
+
+CREATE TABLE IF NOT EXISTS assignment.bc_country (
+	country_code CHAR (2) NOT NULL,
+	country_formal_name VARCHAR (50) NOT NULL,
+	country_short_name VARCHAR (25)
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_program (
+	program_id SERIAL PRIMARY KEY,
+	program_location VARCHAR (25),
+	program_name VARCHAR (50) NOT NULL,
+	program_short_name VARCHAR(25),
+	program_url VARCHAR (15),
+	program_phone_number VARCHAR (15),
+	program_email VARCHAR (15),
+	program_timezone VARCHAR (20),
+	country_code CHAR (2) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_pass(
+	pass_type VARCHAR (50),
+	pass_cost NUMERIC,
+	pass_description VARCHAR (255),
+	program_id VARCHAR (25),
+	pass_id SERIAL PRIMARY KEY,
+	
+	FOREIGN KEY (pass_id) REFERENCES assignment.bc_pass (account_id)  -- Foreign key relationship
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_bicycle_status(
+	bicycle_id INTEGER,
+	bicycle_status_timestamp DATE,
+	bicycle_status_latitude NUMERIC (8, 6),
+	bicycle_status_longitude NUMERIC (9, 6),
+	bicycle_status_power INTEGER,
+	bicycle_status_range NUMERIC (7, 1),
+	bicycle_status VARCHAR (15)
+);
+
+CREATE TABLE IF NOT EXISTS assignment.bc_trip (
+	trip_id SERIAL PRIMARY KEY,
+	bicycle_id INTEGER,
+	trip_start_time DATE,
+	trip_end_time DATE,
+	trip_duration INTEGER,
+	trip_distance NUMERIC (7,1),
+	trip_cost NUMERIC,
+	start_station_id VARCHAR (25),
+	end_station_id VARCHAR (25),
+	memebership_id INTEGER
+);
+
 
 -- Create the stored procedure within the correct schema
 CREATE OR REPLACE PROCEDURE assignment.create_dock_sp (
@@ -300,6 +357,188 @@ EXCEPTION
 END;
 $$;
 
+-- Create the stored procedure within the correct schema
+CREATE OR REPLACE PROCEDURE assignment.create_country_sp (
+    p_country_code VARCHAR (2),
+    p_country_formal_name VARCHAR (50),
+    p_country_short_name VARCHAR (2)
+)
+
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_country(
+        country_code,
+        country_formal_name, 
+        country_short_name
+    ) 
+    VALUES (
+        p_station_id, 
+        p_dock_status, 
+        p_bicycle_id
+    );
+	
+EXCEPTION
+    WHEN OTHERS THEN
+		RAISE;
+END;
+$$;
+-- Create the stored procedure within the correct schema
+CREATE OR REPLACE PROCEDURE assignment.create_program_sp (
+	p_program_location VARCHAR (25),
+	p_program_name VARCHAR (50),
+	p_program_short_name VARCHAR(25),
+	p_program_url VARCHAR (15),
+	p_program_phone_number VARCHAR (15),
+	p_program_email VARCHAR (15),
+	p_program_timezone VARCHAR (20),
+	p_country_code CHAR (2)
+)
+
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_program (
+		program_location,
+		program_name,
+		program_short_name,
+		program_url,
+		program_phone_number,
+		program_email,
+		program_timezone,
+		country_code
+    )
+    VALUES (
+		p_program_location,
+		p_program_name,
+		p_program_short_name,
+		p_program_url,
+		p_program_phone_number,
+		p_program_email,
+		p_program_timezone,
+		country_code
+    );
+
+
+EXCEPTION
+    WHEN OTHERS THEN
+	RAISE;
+END;
+$$;
+
+-- Create the stored procedure within the correct schema
+CREATE OR REPLACE PROCEDURE assignment.create_pass_sp (
+	pass_type VARCHAR (50),
+	pass_cost NUMERIC,
+	pass_description VARCHAR (255),
+	program_id VARCHAR (25)
+)
+
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_pass (
+		pass_type,
+		pass_cost,
+		pass_description,
+		program_id
+    )
+    VALUES (
+		p_pass_type,
+		p_pass_cost,
+		p_pass_description,
+		p_program_id
+    );
+
+
+EXCEPTION
+    WHEN OTHERS THEN
+	RAISE;
+END;
+$$;
+
+-- Create the stored procedure within the correct schema
+CREATE OR REPLACE PROCEDURE assignment.create_bicycle_status_sp (
+	bicycle_status_timestamp DATE,
+	bicycle_status_latitude NUMERIC (8, 6),
+	bicycle_status_longitude NUMERIC (9, 6),
+	bicycle_status_power INTEGER,
+	bicycle_status_range NUMERIC (7, 1),
+	bicycle_status VARCHAR (15)
+)
+
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_bicycle_status (
+		bicycle_status_timestamp,
+		bicycle_status_latitude,
+		bicycle_status_longitude,
+		bicycle_status_power,
+		bicycle_status_range,
+		bicycle_status
+    )
+    VALUES (
+		p_bicycle_status_timestamp,
+		p_bicycle_status_latitude,
+		p_bicycle_status_longitude,
+		p_bicycle_status_power,
+		p_bicycle_status_range,
+		p_bicycle_status
+    );
+
+
+EXCEPTION
+    WHEN OTHERS THEN
+	RAISE;
+END;
+$$;
+
+-- Create the stored procedure within the correct schema
+CREATE OR REPLACE PROCEDURE assignment.create_trip_sp (
+	bicycle_id INTEGER,
+	trip_start_time DATE,
+	trip_end_time DATE,
+	trip_duration INTEGER,
+	trip_distance NUMERIC (7,1),
+	trip_cost NUMERIC,
+	start_station_id VARCHAR (25),
+	end_station_id VARCHAR (25),
+	membership_id INTEGER
+)
+
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO assignment.bc_bicycle_status (
+		bicycle_id,
+		trip_start_time,
+		trip_end_time,
+		trip_duration,
+		trip_distance,
+		trip_cost,
+		start_station_id,
+		end_station_id,
+		memebership_id
+    )
+    VALUES (
+		p_bicycle_id,
+		p_trip_start_time,
+		p_trip_end_time,
+		p_trip_duration,
+		p_trip_distance,
+		p_trip_cost,
+		p_start_station_id,
+		p_end_station_id,
+		p_memebership_id
+    );
+
+
+EXCEPTION
+    WHEN OTHERS THEN
+	RAISE;
+END;
+$$;
 
 -- Call the procedure to create an account
 CALL assignment.create_account_sp(
