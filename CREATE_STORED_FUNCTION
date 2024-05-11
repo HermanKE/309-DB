@@ -1,3 +1,7 @@
+-- Creating a new package
+
+CREATE SCHEMA IF NOT EXISTS assignment;
+
 CREATE OR REPLACE FUNCTION assignment.get_station_details(p_station_id INTEGER)
 RETURNS TABLE (
     station_id INTEGER,
