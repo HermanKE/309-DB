@@ -1,0 +1,65 @@
+-- Create the trigger function to log bicycle count
+CREATE OR REPLACE FUNCTION assignment.log_bicycle_count()
+RETURNS TRIGGER AS $$
+DECLARE
+    bicycle_count INTEGER;
+BEGIN
+    -- Count the number of bicycles in the table
+    SELECT COUNT(*) INTO bicycle_count
+    FROM assignment.bc_bicycle;
+    
+    -- Log the bicycle count
+    RAISE NOTICE 'Total number of bicycles: %', bicycle_count;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the row-level trigger to execute the trigger function
+CREATE TRIGGER log_bicycle_count_trigger
+AFTER INSERT OR UPDATE OR DELETE ON assignment.bc_bicycle
+FOR EACH STATEMENT
+EXECUTE FUNCTION assignment.log_bicycle_count();
+
+-- Drop the trigger if it already exists
+DROP TRIGGER IF EXISTS update_last_report_trigger ON assignment.bc_station;
+
+-- Create or replace the trigger function within the correct schema
+CREATE OR REPLACE FUNCTION assignment.update_last_report()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Update the last_report column to the current date
+    NEW.last_report := CURRENT_DATE;
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the trigger to update last_report within the correct schema
+CREATE TRIGGER update_last_report_trigger
+BEFORE INSERT ON assignment.bc_station
+FOR EACH ROW
+EXECUTE FUNCTION assignment.update_last_report();
+
+-- Create the statement-level trigger function to log bicycle count
+CREATE OR REPLACE FUNCTION assignment.log_bicycle_count()
+RETURNS TRIGGER AS $$
+DECLARE
+    bicycle_count INTEGER;
+BEGIN
+    -- Count the number of bicycles in the table
+    SELECT COUNT(*) INTO bicycle_count
+    FROM assignment.bc_bicycle;
+    
+    -- Log the bicycle count
+    RAISE NOTICE 'Total number of bicycles: %', bicycle_count;
+    
+    RETURN NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create the statement-level trigger to execute the trigger function
+CREATE TRIGGER log_bicycle_count_trigger
+AFTER INSERT OR UPDATE OR DELETE ON assignment.bc_bicycle
+FOR EACH STATEMENT
+EXECUTE FUNCTION assignment.log_bicycle_count();
