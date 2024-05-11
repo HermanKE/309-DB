@@ -1,6 +1,6 @@
 -- Drop the trigger if it already exists
 DROP TRIGGER IF EXISTS log_bicycle_count_trigger ON assignment.bc_bicycle;
-DROP TRIGGER IF EXISTS update_last_report_trigger ON assignment.bc_bicycle;
+DROP TRIGGER IF EXISTS update_last_report_trigger ON assignment.bc_station;
 
 -- Creating or replacing the function if it already exists for logging the bicycle count in the 'assignment' schema
 CREATE OR REPLACE FUNCTION assignment.log_bicycle_count()
