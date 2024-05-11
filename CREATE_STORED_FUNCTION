@@ -35,3 +35,43 @@ BEGIN
     WHERE assignment.bc_station.station_id = p_station_id;  
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+-- Creating or replacing the function if it already exists
+CREATE OR REPLACE FUNCTION assignment.create_account_sp (
+    p_account_first_name VARCHAR,
+    p_account_last_name VARCHAR,
+    p_account_email VARCHAR,
+    p_account_password VARCHAR,
+    p_account_mobile_phone VARCHAR,
+    p_account_street VARCHAR,
+    p_account_apartment VARCHAR,
+    p_account_city VARCHAR,
+    p_account_state_province VARCHAR,
+    p_account_postal_code VARCHAR
+)
+-- Returning the type void (no value), so that it's possible to insert and update the table 
+RETURNS void 
+LANGUAGE plpgsql
+AS $$
+BEGIN
+END;
+$$;
+
+-- Create the purchase_membership_sp function
+CREATE OR REPLACE FUNCTION assignment.purchase_membership_sp (
+    p_pass_type VARCHAR,
+    p_pass_total NUMERIC,
+    p_start_time DATE,
+    p_end_time DATE,
+    p_account_id INTEGER
+)
+-- Returning the type void (no value), so that it's possible to insert and update the table 
+RETURNS void  
+LANGUAGE plpgsql
+AS $$
+BEGIN
+END;
+$$;
+
