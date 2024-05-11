@@ -1,4 +1,5 @@
--- Drop obsolete or redundant procedures
+-- Droping procedures if they already exists to avoid duplicates resulting to errors
+
 DROP PROCEDURE IF EXISTS assignment.create_account_sp;
 DROP PROCEDURE IF EXISTS assignment.create_bicycle_sp;
 DROP PROCEDURE IF EXISTS assignment.create_dock_sp;
@@ -11,7 +12,8 @@ DROP PROCEDURE IF EXISTS assignment.create_status_sp;
 DROP PROCEDURE IF EXISTS assignment.create_trip_sp;
 
 
--- Create the stored procedure within the correct schema
+-- Creating the stored procedures within the 'assignment' schema, replacing them if they already exists 
+
 CREATE OR REPLACE PROCEDURE assignment.create_dock_sp (
     p_station_id VARCHAR,
     p_dock_status VARCHAR,
@@ -37,7 +39,7 @@ EXCEPTION
 END;
 $$;
 
--- Create CREATE_ACCOUNT_SP in the 'assignment' schema
+
 CREATE OR REPLACE PROCEDURE assignment.create_account_sp (
     p_account_first_name VARCHAR,
     p_account_last_name VARCHAR,
@@ -77,9 +79,9 @@ BEGIN
         p_account_state_province,
         p_account_postal_code
     )
+
+-- If the account_email value already exist (duplicated emails), it'll raise a conflict and then stop the execution
 		ON CONFLICT (account_email) DO NOTHING;
-
-
 
 EXCEPTION
     WHEN OTHERS THEN
@@ -222,14 +224,15 @@ BEGIN
         p_end_time,
         p_account_id
     )
-ON CONFLICT (account_id) DO NOTHING;  -- Avoid duplication by station name
+
+-- Avoiding duplication of memebership based on the account_id column, since it's manually written in
+ON CONFLICT (account_id) DO NOTHING; 
 
 EXCEPTION
     WHEN OTHERS THEN
 END;
 $$;
 
--- Create the stored procedure within the correct schema
 CREATE OR REPLACE PROCEDURE assignment.create_country_sp (
     p_country_code VARCHAR (2),
     p_country_formal_name VARCHAR (50),
@@ -255,7 +258,7 @@ EXCEPTION
 		RAISE;
 END;
 $$;
--- Create the stored procedure within the correct schema
+
 CREATE OR REPLACE PROCEDURE assignment.create_program_sp (
 	p_program_location VARCHAR (25),
 	p_program_name VARCHAR (50),
@@ -298,7 +301,6 @@ EXCEPTION
 END;
 $$;
 
--- Create the stored procedure within the correct schema
 CREATE OR REPLACE PROCEDURE assignment.create_pass_sp (
 	pass_type VARCHAR (50),
 	pass_cost NUMERIC,
@@ -329,7 +331,6 @@ EXCEPTION
 END;
 $$;
 
--- Create the stored procedure within the correct schema
 CREATE OR REPLACE PROCEDURE assignment.create_bicycle_status_sp (
 	bicycle_status_timestamp DATE,
 	bicycle_status_latitude NUMERIC (8, 6),
@@ -366,7 +367,6 @@ EXCEPTION
 END;
 $$;
 
--- Create the stored procedure within the correct schema
 CREATE OR REPLACE PROCEDURE assignment.create_trip_sp (
 	bicycle_id INTEGER,
 	trip_start_time DATE,
