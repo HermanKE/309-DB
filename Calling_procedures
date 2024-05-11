@@ -1,0 +1,63 @@
+-- Call the procedure to create an account
+CALL assignment.create_account_sp(
+    'August',  -- p_account_first_name
+    'Sjo',  -- p_account_last_name
+    'augist.sjo@example.com',  -- p_account_email
+    'pasword111',  -- p_account_password
+    '123-45-678',  -- p_account_mobile_phone
+    'Volleveien',  -- p_account_street
+    '12b',  -- p_account_apartment
+    'Oslo',  -- p_account_city
+    'Eksempel',  -- p_account_state_province
+    '7844'  -- p_account_postal_code
+);
+
+--Call the procedure to create a station
+CALL assignment.create_station_sp(
+    'Furuset Station',  -- p_station_name
+    'FURU',  -- p_station_short_name
+    52.1437,  -- p_latitude
+    -71.0682,  -- p_longitude
+    'Furulia 28A',  -- p_address
+    '8064',  -- p_postal_code
+    '555-55-555',  -- p_contact_phone
+    30,  -- p_capacity
+    15,  -- p_vehicles_available
+    15,  -- p_docks_available
+    4,  -- p_is_renting
+    1,  -- p_is_returning
+    CURRENT_DATE,  -- p_last_report
+    'PROG002'  -- p_program_id
+);
+
+-- Call the procedure to create a bicycle
+CALL assignment.create_bicycle_sp(
+    'Classic',  -- p_bicycle_type
+    7,  -- p_capacity
+    'MTM',  -- p_make
+    'Bicycle 4.0',  -- p_model
+    'White',  -- p_color
+    2024,  -- p_year_acquired
+    'Available',  -- p_status
+    48,  -- p_latitude
+    -34,  -- p_longitude
+    60,  -- p_current_power
+    100,  -- p_current_range
+    CURRENT_DATE  -- p_updated
+);
+
+-- Call the procedure to create a dock
+CALL assignment.create_dock_sp(
+    '1',  -- p_station_id
+    'Available',  -- p_dock_status
+    NULL  -- p_bicycle_id
+);
+
+
+CALL assignment.purchase_membership_sp(
+    'Monthly',  -- p_pass_type
+    50, -- p_pass_total
+    CURRENT_DATE,  -- p_start_time
+    (CURRENT_DATE + INTERVAL '1 month')::DATE,  -- p_end_time
+    26  -- p_account_id
+);
