@@ -1,0 +1,28 @@
+CREATE OR REPLACE FUNCTION assignment.get_station_details(p_station_id INTEGER)
+RETURNS TABLE (
+    station_id INTEGER,
+    station_name VARCHAR,
+    station_short_name VARCHAR,
+    latitude NUMERIC,
+    longitude NUMERIC,
+    address VARCHAR,
+    postal_code VARCHAR,
+    contact_phone VARCHAR,
+    capacity INTEGER,
+    vehicles_available INTEGER,
+    docks_available INTEGER,
+    is_renting NUMERIC,
+    is_returning NUMERIC,
+    last_report DATE,
+    program_id VARCHAR
+)
+
+AS $$
+BEGIN
+    -- Return the station details for the specified station_id
+    RETURN QUERY
+    SELECT *
+    FROM assignment.bc_station
+    WHERE assignment.bc_station.station_id = p_station_id;  -- Explicit reference to avoid ambiguity
+END;
+$$ LANGUAGE plpgsql;
