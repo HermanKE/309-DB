@@ -2,17 +2,19 @@
 DROP TRIGGER IF EXISTS log_bicycle_count_trigger ON assignment.bc_bicycle;
 DROP TRIGGER IF EXISTS update_last_report_trigger ON assignment.bc_bicycle;
 
--- Create the trigger function to log bicycle count
+-- Creating or replacing the function if it already exists for logging the bicycle count in the 'assignment' schema
 CREATE OR REPLACE FUNCTION assignment.log_bicycle_count()
 RETURNS TRIGGER AS $$
+
+-- Declaring the variable that is going to be used
 DECLARE
     bicycle_count INTEGER;
 BEGIN
-    -- Count the number of bicycles in the table
+    -- Counting the number of all the bicycles in the table
     SELECT COUNT(*) INTO bicycle_count
     FROM assignment.bc_bicycle;
     
-    -- Log the bicycle count
+    -- Logging the bicycle count, returning this message
     RAISE NOTICE 'Total number of bicycles: %', bicycle_count;
     
     RETURN NULL;
@@ -20,15 +22,15 @@ END;
 $$ LANGUAGE plpgsql;
 
 -- Create the statement-level trigger to execute the trigger function
+-- When a row is added, updated, or deleted to the 'bc_bicycle' table, it'll trigger the function
+
 CREATE TRIGGER log_bicycle_count_trigger
 AFTER INSERT OR UPDATE OR DELETE ON assignment.bc_bicycle
 FOR EACH STATEMENT
 EXECUTE FUNCTION assignment.log_bicycle_count();
 
--- Drop the trigger if it already exists
-DROP TRIGGER IF EXISTS update_last_report_trigger ON assignment.bc_station;
-
--- Create or replace the trigger function within the correct schema
+-- Creating or replacing the function if it already exists for updating the date in the column 'last_report' in table 'bc_station' in the 'assignment' schema
+-- It'll update it to the current date even if the date is originally inserted manually 
 CREATE OR REPLACE FUNCTION assignment.update_last_report()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -39,7 +41,7 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
--- Create the trigger to update last_report within the correct schema
+-- Creating the row-level trigger to execute the trigger function
 CREATE TRIGGER update_last_report_trigger
 BEFORE INSERT ON assignment.bc_station
 FOR EACH ROW
